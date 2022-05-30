@@ -15,7 +15,7 @@ heat_trans:	$(OBJ)
 heat_trans.o:	$(MYDIR)heat_trans.c global.h
 		$(FCOMPILER) $(MYDIR)heat_trans.c
 
-#eulersch.o:	$(MYDIR)eulersch.c global.h eulersch.h
+#eulersch.o:	$(MYDIR)eulersch.c eulersch.h global.h
 #		$(FCOMPILER) $(MYDIR)eulersch.c
 		
 #Remove Old Object files, useful when recompiling
