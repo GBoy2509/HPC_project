@@ -1,0 +1,165 @@
+Sender: LSF System <lsfadmin@r01n26>
+Subject: Job 3654801: <bash> in cluster <sustchpc> Done
+
+Job <bash> was submitted from host <login03> by user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:07:29 2022.
+Job was executed on host(s) <r01n26>, in queue <ser>, as user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:07:30 2022.
+</work/mae-zhonghc> was used as the home directory.
+</work/mae-zhonghc/hpc/hw5/ex-05> was used as the working directory.
+Started at Mon May  9 15:07:30 2022.
+Terminated at Mon May  9 15:07:30 2022.
+Results reported at Mon May  9 15:07:30 2022.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+
+#BSUB -J bash
+#BSUB -q ser
+#BSUB -n 1
+#BSUB -e %bash.err
+#BSUB -o %bash.out
+#BSUB -R "span[ptile=1]"
+
+module load intel/2018.4
+module load gcc/9.3.0
+
+./h5_combine
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.12 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   0 sec.
+    Turnaround time :                            1 sec.
+
+The output (if any) follows:
+
+
+
+PS:
+
+Read file <%bash.err> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@r01n10>
+Subject: Job 3654867: <bash> in cluster <sustchpc> Done
+
+Job <bash> was submitted from host <login03> by user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:15:53 2022.
+Job was executed on host(s) <r01n10>, in queue <ser>, as user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:15:54 2022.
+</work/mae-zhonghc> was used as the home directory.
+</work/mae-zhonghc/hpc/hw5/ex-05> was used as the working directory.
+Started at Mon May  9 15:15:54 2022.
+Terminated at Mon May  9 15:15:55 2022.
+Results reported at Mon May  9 15:15:55 2022.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+
+#BSUB -J bash
+#BSUB -q ser
+#BSUB -n 1
+#BSUB -e %bash.err
+#BSUB -o %bash.out
+#BSUB -R "span[ptile=1]"
+
+module load intel/2018.4
+module load gcc/9.3.0
+
+./h5_combine
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.13 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   1 sec.
+    Turnaround time :                            2 sec.
+
+The output (if any) follows:
+
+
+
+PS:
+
+Read file <%bash.err> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@r01n10>
+Subject: Job 3654907: <bash> in cluster <sustchpc> Done
+
+Job <bash> was submitted from host <login03> by user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:21:00 2022.
+Job was executed on host(s) <r01n10>, in queue <ser>, as user <mae-zhonghc> in cluster <sustchpc> at Mon May  9 15:21:01 2022.
+</work/mae-zhonghc> was used as the home directory.
+</work/mae-zhonghc/hpc/hw5/ex-05> was used as the working directory.
+Started at Mon May  9 15:21:01 2022.
+Terminated at Mon May  9 15:21:02 2022.
+Results reported at Mon May  9 15:21:02 2022.
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+
+#BSUB -J bash
+#BSUB -q ser
+#BSUB -n 1
+#BSUB -e %bash.err
+#BSUB -o %bash.out
+#BSUB -R "span[ptile=1]"
+
+module load intel/2018.4
+module load gcc/9.3.0
+
+./h5_combine
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.13 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   1 sec.
+    Turnaround time :                            2 sec.
+
+The output (if any) follows:
+
+
+
+PS:
+
+Read file <%bash.err> for stderr output of this job.
+
