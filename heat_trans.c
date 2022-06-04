@@ -2,14 +2,18 @@
 // Square Omega of dimension 1 by 1
 // Euler scheme for the time discretization
 // finite difference method for the spatial discretization
+// use HDF5 to store output data
 //
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include "global.h"
+#include "hdf5.h"
+#define FILE2 "heat_trans_data.h5"
 
 
 int main() {
+
 	// allocate two dimensional array (N+1)*(N+1)
 	double** u = (double**)malloc(sizeof(float*) * (N + 2));
 	for (int i = 0; i < (N + 2); i++) {
@@ -127,12 +131,55 @@ int main() {
 	}
 	free(u);
 	free(unew);
+
+
+
+    /* HDF5 initialization */
+
+    hid_t        file_id, dataset_id, group_id, dataspace_id;  /* identifiers */
+    hsize_t      dims[2];
+    herr_t       status;
+    int * vec1 = (int*)malloc((N+2)*(N+2)*sizeof(int));   
+    free(vec1);
+
+    /* HDF5: Create a new file to store velocity datasets. */
+    file_id = H5Fcreate("heat_trans_data.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+	dims[0] = N+2; 
+    dims[1] = N+2;
+
+    dataspace_id = H5Screate_simple(2, dims, NULL);
+
+    /* Create two groups to store initial values and output values in the file. */
+    group_id = H5Gcreate2(file_id, "/output", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+    /* Create the datasets. */
+    dataset_id = H5Dcreate2(file_id, "/output/uout", H5T_STD_I32BE, dataspace_id, 
+                          H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+
+    //  printf("original dset_data[0][0][0]:%2d\n", dset_data[0][0][0]);
+
+     /* Write the first dataset. */
+    status = H5Dwrite(dataset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+                       u);
+
+     /* Close the data space for the first dataset. */
+    status = H5Sclose(dataspace_id);
+
+     /* Close the first dataset. */
+    status = H5Dclose(dataset_id);
+     /* Close the group. */
+    status = H5Gclose(group_id);
+    status = H5Fclose(file_id);
+
+
 	return 0;
 }
 
 
-// eulersch function
-double forward(double ujk, double ujmk, double ujpk, double ujkm, double ujkp, double x, double y) {
+    // eulersch function
+    double forward(double ujk, double ujmk, double ujpk, double ujkm, double ujkp, double x, double y) {
         double u1, u2;
         double ujknew;
         double dt;
@@ -153,5 +200,7 @@ double forward(double ujk, double ujmk, double ujpk, double ujkm, double ujkp, d
         ujknew = ujk + 1/(rho*c)*(f+u1+u2);
 
         return ujknew;
+
 }
+
 
