@@ -23,5 +23,5 @@ heat_trans.o:	$(MYDIR)heat_trans.c global.h
 #Remove Old Object files, useful when recompiling
 .PHONY: clean
 clean:
-	rm -rf *.o *.h5 *.err *.out heat_trans
+	rm -rf *.o *.h5 *.err *.out heat_trans *.csv
 
