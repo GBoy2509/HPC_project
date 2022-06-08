@@ -9,6 +9,7 @@ double L = 1.0;
 
 // coefs still tbd
 double g = 1.0;
-double h = 1.0;
+double h1 = -1.0;
+double h2 = -1.0;
 double c = 1.0;
 double rho = 1.0;

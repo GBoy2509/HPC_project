@@ -9,5 +9,5 @@ module purge
 module load intel/2018.4
 module load mpi/intel/2018.4
 
-mpirun -np 1 ./heat_transfer_implicit.out \
+mpirun -np 1 ./heat_transfer_explicit.out \
   -log_view > $LSB_JOBID.log 2>&1

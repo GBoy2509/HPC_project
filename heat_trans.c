@@ -179,7 +179,7 @@ int main() {
 
 
     // eulersch function
-    double forward(double ujk, double ujmk, double ujpk, double ujkm, double ujkp, double x, double y) {
+double forward(double ujk, double ujmk, double ujpk, double ujkm, double ujkp, double x, double y) {
         double u1, u2;
         double ujknew;
         double dt;
