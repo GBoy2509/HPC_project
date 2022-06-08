@@ -1,6 +1,6 @@
 
 # -*- mode: makefile -*-
-PETSC_DIR := /work/mae-zhonghc/lib/petsc-3.16.6-opt
+PETSC_DIR := /work/mae-guol/lib/petsc-3.16.6-opt
 #PETSC_DIR  := /work/mae-liuj/lib/petsc-3.14.6-opt
 PETSC_ARCH := .
 
@@ -53,7 +53,7 @@ CUDA_INCLUDE := $(shell pkg-config --variable=cudainclude $(PACKAGES))
 #	@echo CUDA_INCLUDE=$(CUDA_INCLUDE)
 
 # Files
-EXEC := heat_transfer_implicit.out
+EXEC := heat_transfer_explicit.out
 SRC := $(wildcard *.c)
 OBJ := $(patsubst %.c,%.o,$(SRC))
 
