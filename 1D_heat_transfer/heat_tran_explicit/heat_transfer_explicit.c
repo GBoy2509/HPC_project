@@ -184,8 +184,6 @@ int main(int argc, char** argv) {
 		//norm0 = norm1;
 	}
 	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
-
-	
 	
 	// output
 	// change as your needs (here, I print out t~=0.01)
@@ -214,6 +212,19 @@ int main(int argc, char** argv) {
 	ierr = VecGetValues(u, N, num, uout); CHKERRQ(ierr);
 	ierr = PetscScalarView(n, uout, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
+	double err1 = 0.0, err2;
+	for (int i = 0; i < N; i++) {
+		err2 = fabs(uexact[i] - uout[i]);
+		printf("%lf,%lf,%lf\n", uexact[i], uout[i], err2);
+		if (err2 > err1) {
+			err1 = err2;
+		}
+		printf("The max error is : %lf\n", err1);
+	}
+	printf("The final error is : %lf\n", err1);
+
+
+
 	hid_t        file_id, dataset_id, group_id, dataspace_id;  /* identifiers */
 	hsize_t      dims[1];
 	herr_t       status;
@@ -232,7 +243,6 @@ int main(int argc, char** argv) {
 
 	/* Create the datasets. */
 	dataset_id = H5Dcreate2(file_id, "/output/uout", H5T_IEEE_F64BE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-
 
 	//  printf("original dset_data[0]:%2d\n", dset_data[0]);
 
