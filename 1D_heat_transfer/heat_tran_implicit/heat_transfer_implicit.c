@@ -33,13 +33,14 @@ int main(int argc, char** argv) {
 	//for (int i = 0; i < (N); i++) {
 	//	f[i] = (double*)malloc(sizeof(double) * (N));
 	//}
-	//double x;
+	double x;
 	double dx;
 	dx = (double)L / (double)N;
+	int nsteps = (int)(tend / dt);
 	//double dy;
 	//dy = (double)L / (double)N;
-	//FILE* init;
-	//FILE* uout;
+	FILE* init;
+	FILE* uout;
 	double pi = 4.0 * atan(1.0);
 	printf("%d, %f, %f\n", N, dx, dt);
 
@@ -74,7 +75,7 @@ int main(int argc, char** argv) {
 
 	Mat            A;
 	Vec            u, uold, f;
-	PetscInt       nlocal, rstart, rend;
+	PetscInt       nlocal, rstart, rend, nstep = nsteps;
 	PetscInt       n = N, maxit = 5000;
 	PetscInt	   col[3];
 	PetscReal      temp;
@@ -176,7 +177,7 @@ int main(int argc, char** argv) {
 	// Create the linear solver
 	ierr = KSPCreate(PETSC_COMM_WORLD, &ksp); CHKERRQ(ierr);
 
-	for (int iter = 0; iter < maxit; iter++) {
+	for (int iter = 0; iter < nstep; iter++) {
 		ierr = VecCopy(u, uold); CHKERRQ(ierr);
 		ierr = VecAXPY(uold, one, f); CHKERRQ(ierr);
 
@@ -186,15 +187,15 @@ int main(int argc, char** argv) {
 		ierr = KSPSolve(ksp, uold, u); CHKERRQ(ierr);
 
 		ierr = VecNorm(u, NORM_1, &norm1);
-		err = fabs(norm1 - norm0);
-		if (err < tor) {
+		//err = fabs(norm1 - norm0);
+		/*if (err < tor) {
 			PetscPrintf(comm, "Number of iteration is %d, err is %f\n", iter + 1, err);
 			break;
 		}
-		//else {
-		//	PetscPrintf(comm, "Maximum iteration");
-		//}
-		norm0 = norm1;
+		else {
+			PetscPrintf(comm, "Maximum iteration");
+		}*/
+		//norm0 = norm1;
 	}
 	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
