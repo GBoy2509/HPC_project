@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
 	double x;
 	double dx;
 	dx = (double)L / (double)N;
+	int nsteps = (int)(tend / dt);
 	//double dy;
 	//dy = (double)L / (double)N;
 	// FILE* init;
@@ -75,8 +76,8 @@ int main(int argc, char** argv) {
 
 	Mat            A;
 	Vec            u, uold, f;
-	PetscInt       nlocal, rstart, rend;
-	PetscInt       n = N, maxit = 5000;
+	PetscInt       nlocal, rstart, rend, nstep = nsteps;
+	PetscInt       n = N;
 	PetscInt	   col[3];
 	PetscReal      temp;
 	PetscReal      norm0 = 0.0, norm1 = 1.0, tor = 1.e-8, err;
@@ -172,16 +173,16 @@ int main(int argc, char** argv) {
 
 	// calculate next step
 	// forward euler scheme
-	for (int iter = 0; iter < maxit; iter++) {
+	for (int iter = 0; iter < nstep; iter++) {
 		ierr = VecCopy(u, uold); CHKERRQ(ierr);
 		ierr = MatMultAdd(A, uold, f, u); CHKERRQ(ierr);
 		ierr = VecNorm(u, NORM_1, &norm1);
-		err = fabs(norm1 - norm0);
-		if (err < tor) {
-			PetscPrintf(comm, "Number of iteration is %d, err is %f\n", iter + 1, err);
-			break;
-		}
-		norm0 = norm1;
+		//err = fabs(norm1 - norm0);
+		//if (err < tor) {
+		//	PetscPrintf(comm, "Number of iteration is %d, err is %f\n", iter + 1, err);
+		//	break;
+		//}
+		//norm0 = norm1;
 	}
 	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
