@@ -1,6 +1,6 @@
 
 # -*- mode: makefile -*-
-PETSC_DIR := /work/mae-zhonghc/lib/petsc-3.16.6-opt
+PETSC_DIR := /work/mae-guol/lib/petsc-3.16.6-opt
 #PETSC_DIR  := /work/mae-liuj/lib/petsc-3.14.6-opt
 PETSC_ARCH := .
 
@@ -59,10 +59,10 @@ OBJ := $(patsubst %.c,%.o,$(SRC))
 
 #Rules
 $(EXEC) : $(OBJ)
-	$(LINK.cc) $(LDLIBS) -o $@ $^
+	$(LINK.cc) $(LDLIBS) -o $@ $^ -lhdf5
 	$(RM) $(OBJ)
 %.o : %.c global.h
-	$(COMPILE.c) $(OUTPUT_OPTION) $<
+	$(COMPILE.c) $(OUTPUT_OPTION) $< -lhdf5
 
 .PHONY : clean
 clean:
