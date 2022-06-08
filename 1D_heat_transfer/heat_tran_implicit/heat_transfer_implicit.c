@@ -33,13 +33,13 @@ int main(int argc, char** argv) {
 	//for (int i = 0; i < (N); i++) {
 	//	f[i] = (double*)malloc(sizeof(double) * (N));
 	//}
-	double x;
+	//double x;
 	double dx;
 	dx = (double)L / (double)N;
 	//double dy;
 	//dy = (double)L / (double)N;
-	FILE* init;
-	FILE* uout;
+	//FILE* init;
+	//FILE* uout;
 	double pi = 4.0 * atan(1.0);
 	printf("%d, %f, %f\n", N, dx, dt);
 
@@ -191,9 +191,9 @@ int main(int argc, char** argv) {
 			PetscPrintf(comm, "Number of iteration is %d, err is %f\n", iter + 1, err);
 			break;
 		}
-		else {
-			PetscPrintf(comm, "Maximum iteration");
-		}
+		//else {
+		//	PetscPrintf(comm, "Maximum iteration");
+		//}
 		norm0 = norm1;
 	}
 	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
