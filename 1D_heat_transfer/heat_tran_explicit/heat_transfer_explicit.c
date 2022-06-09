@@ -13,7 +13,7 @@
 #include "petscmat.h"
 #include "global.h"
 #include "hdf5.h"
-#define FILE2 "heat_trans_data.h5"
+#define FILE2 "heat_trans_data_implicit.h5"
 
 static char help[] = "Explicit EULER method\n\n";
 
@@ -40,6 +40,8 @@ int main(int argc, char** argv) {
 	//dy = (double)L / (double)N;
 	// FILE* init;
 	// FILE* uout;
+
+	// calculate analytical solution
 	double pi = 4.0 * atan(1.0);
 	double coef = 1.0 / kcond / L / L / pi / pi;
 	double CFL = dt * kcond / dx / dx / rho / c;
@@ -49,7 +51,8 @@ int main(int argc, char** argv) {
 		printf("%f\n", uexact[i]);
 	}
 
-	// HDF5: Initialization 
+	// HDF5 part
+	// Initialization
 	hid_t        file_id, dataset_id1, dataset_id2, group_id, dataspace_id1, dataspace_id2;  /* identifiers */
 	hsize_t      dim1[1], dim2[1];
 	herr_t       status;
@@ -88,8 +91,8 @@ int main(int argc, char** argv) {
 	PetscInt       nlocal, rstart, rend;
 	PetscInt       n = N;
 	PetscInt	   col[3], num[N];
-	PetscReal      temp, t = 0.0, tend = 2.0;
-	// PetscReal      norm0 = 0.0, norm1 = 1.0;
+	PetscReal      temp, t = 0.0, tend = 1.0;
+	//PetscReal      norm0 = 0.0, norm1 = 1.0, tor = 1.e-8, err;
 	PetscScalar    value[3], uout[N], para[3];
 	PetscErrorCode ierr;
 
@@ -167,8 +170,7 @@ int main(int argc, char** argv) {
 	ierr = VecAssemblyEnd(f); CHKERRQ(ierr);
 	//ierr = VecView(f, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
-	/* restart=true: status=restart
-	   restart=false: status=first run*/
+	// restart=true: restart
 	bool restart = false;
 	if (restart == false)
 	{
@@ -202,8 +204,7 @@ int main(int argc, char** argv) {
 		//ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 	}
 
-	if (restart == true)
-	{
+	if (restart == true) {
 		/* HDF5: Open an existing file which stores datasets. */
 		file_id = H5Fopen(FILE2, H5F_ACC_RDWR, H5P_DEFAULT);
 
@@ -241,6 +242,7 @@ int main(int argc, char** argv) {
 		ierr = VecCopy(u, uold); CHKERRQ(ierr);
 		ierr = MatMultAdd(A, uold, f, u); CHKERRQ(ierr);
 		t = t + dt;
+		para[0] = t;
 
 		//ierr = VecNorm(u, NORM_1, &norm1);
 		//err = fabs(norm1 - norm0);
@@ -249,22 +251,18 @@ int main(int argc, char** argv) {
 		//	break;
 		//}
 		//norm0 = norm1;
-		if ((iter + 1) % 10 == 0)
-		{
-			for (int i = 0; i < N; i++)
-			{
+		if ((iter + 1) % 10 == 0) {
+			for (int i = 0; i < N; i++) {
 				num[i] = i;
 			}
 			ierr = VecGetValues(u, N, num, uout); CHKERRQ(ierr);
 			status = H5Dwrite(dataset_id1, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, uout);
 			status = H5Dwrite(dataset_id2, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, para);
 		}
-
-		/* If time>2s end iteration */
-		if (t > tend)
-		{
+		if (t > tend) {
 			break;
 		}
+		//ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 	}
 	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 	
@@ -287,7 +285,6 @@ int main(int argc, char** argv) {
 	//	iter = iter + 1;
 	//}
 
-	/* HDF5 initialization */
 	for (int i = 0; i < N; i++)
 	{
 		num[i] = i;
@@ -307,7 +304,10 @@ int main(int argc, char** argv) {
 	}
 	printf("The final error is : %lf\n", err1);
 
-
+	for (int i = 0; i < N; i++) {
+		x = (i + 0.5) * dx;
+		printf("%lf %lf %lf\n", x, uout[i], uexact[i]);
+	}
 
 	//hid_t        file_id, dataset_id, group_id, dataspace_id;  /* identifiers */
 	//hsize_t      dims[1];
