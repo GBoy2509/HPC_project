@@ -10,16 +10,16 @@
 #include <petscksp.h>
 #include <petsc.h>
 #include <petscvec.h>
+#include <mpi.h>
 #include "petscmat.h"
 #include "global.h"
 #include "hdf5.h"
-#define FILE2 "heat_trans_data.h5"
+#define FILE2 "heat_trans_data_implicit.h5"
 
 static char help[] = "Implicit EULER method\n\n";
 
 int main(int argc, char** argv) {
 	// allocate one dimensional array
-
 	//double* u = (double**)malloc(sizeof(float*) * (N + 2));
 	//for (int i = 0; i < (N + 2); i++) {
 	//	u[i] = (double*)malloc(sizeof(double) * (N + 2));
@@ -41,6 +41,8 @@ int main(int argc, char** argv) {
 	//dy = (double)L / (double)N;
 	//FILE* init;
 	//FILE* uout;
+
+	// calculate analytical solution
 	double pi = 4.0 * atan(1.0);
 	double coef = 1.0 / kcond / L / L / pi / pi;
 	double CFL = dt * kcond / dx / dx / rho / c;
@@ -50,8 +52,9 @@ int main(int argc, char** argv) {
 		printf("%f\n", uexact[i]);
 	}
 
-	/* HDF5: Initialization */
-	hid_t        file_id, dataset_id1, dataset_id2, group_id, dataspace_id1, dataspace_id2;  /* identifiers */
+	// HDF5 part
+	// Initialization
+	hid_t        file_id, dataset_id1, dataset_id2, group_id, dataspace_id1, dataspace_id2;
 	hsize_t      dim1[1], dim2[1];
 	herr_t       status;
 	double* vec1 = (double*)malloc(N * sizeof(double));
@@ -100,7 +103,12 @@ int main(int argc, char** argv) {
 	// MPI initial
 	//comm = MPI_COMM_WORLD;
 	//MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-
+	MPI_Init(&argc, &argv);
+	int rank, size;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	MPI_Barrier(MPI_COMM_WORLD);
+	double start = MPI_Wtime();
 	ierr = PetscOptionsGetInt(NULL, NULL, "-n", &n, NULL); CHKERRQ(ierr);
 	ierr = PetscOptionsGetReal(NULL, NULL, "-dt", &dt, NULL);
 
@@ -171,9 +179,8 @@ int main(int argc, char** argv) {
 	ierr = VecAssemblyEnd(f); CHKERRQ(ierr);
 	//ierr = VecView(f, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
-	/* restart=true: status=restart
-	   restart=false:status=first run*/
-	bool  restart = false;
+	// restart=true: restart
+	bool restart = false;
 	if (restart == false)
 	{
 		/* HDF5: Create a new file to store datasets. */
@@ -267,6 +274,7 @@ int main(int argc, char** argv) {
 		}*/
 		//norm0 = norm1;
 		t = t + dt;
+		para[0] = t;
 		if ((iter + 1) % 10 == 0)
 		{
 			for (int i = 0; i < N; i++)
@@ -277,8 +285,6 @@ int main(int argc, char** argv) {
 			status = H5Dwrite(dataset_id1, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, uout);
 			status = H5Dwrite(dataset_id2, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, para);
 		}
-
-		/* If time>2s end iteration */
 		if (t > tend)
 		{
 			break;
@@ -302,7 +308,7 @@ int main(int argc, char** argv) {
 		//	printf("%lf %lf\n", (double)(iter+1)*dt, err3);
 		//}
 	}
-	ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
+	//ierr = VecView(u, PETSC_VIEWER_STDOUT_WORLD); CHKERRQ(ierr);
 
 	// output
 	// change as your needs (here, I print out t~=0.01)
@@ -322,7 +328,7 @@ int main(int argc, char** argv) {
 
 	//	iter = iter + 1;
 	//}
-	/* HDF5 initialization */
+	
 	for (int i = 0; i < N; i++)
 	{
 		num[i] = i;
@@ -342,6 +348,15 @@ int main(int argc, char** argv) {
 	}
 	printf("The final error is : %lf\n", err1);
 
+	//for (int i = 0; i < N; i++) {
+	//	x = (i + 0.5) * dx;
+	//	printf("%lf %lf %lf\n", x, uout[i], uexact[i]);
+	//}
+	MPI_Barrier(MPI_COMM_WORLD);
+	double end = MPI_Wtime();
+
+	MPI_Finalize();
+	printf("MPI Runtime is %f\n", end - start);
 	ierr = MatDestroy(&A); CHKERRQ(ierr);
 	ierr = VecDestroy(&u); CHKERRQ(ierr);
 	ierr = VecDestroy(&uold); CHKERRQ(ierr);
