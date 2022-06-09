@@ -1,1 +1,5 @@
-Single project to solve 1D heat transfer problem
+本项目为一维传热问题（Problem B），分为两个主程序，见文件夹1D_heat_transfer，其中heat_tran_explicit文件夹为前向欧拉求解，heat_tran_implicit文件夹为反向欧拉求解。\
+开始选择组队完成二维传热问题，代码见根目录与heat_tran_explicit，heat_tran_implicit文件夹，后因一些问题转换为单人完成。
+对于每个主程序据提供了 Makefile脚本，太乙提交脚本。
+Makefile链接了HDF5库与PETSc库，并提供了make clean功能用以重新编译程序，编译程序直接执行指令make。
+太乙提交脚本使用指令为，bsub < ty_script.sh，默认提交到debug队列中。
