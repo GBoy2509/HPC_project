@@ -1,10 +1,10 @@
 // Here, global variables are defined
-# define N 80
+# define N 100
 // int N = 100;
-double dt = 1.e-7;
+double dt = 1.e-5;
 double L = 1.0;
 double kcond = 1.0;
-int nstep = 10000;
+int nstep = 1.e+9;
 //double tend = 2.0;
 
 // coefs still tbd
